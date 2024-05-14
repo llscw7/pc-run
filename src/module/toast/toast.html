@@ -1,0 +1,35 @@
+<!-- toast.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .toast {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  
+  <script>
+    const { ipcRenderer } = require('electron');
+    
+    // 接收主进程传递的消息
+    ipcRenderer.on('toast-message', (event, message, delay) => {
+      const toastElement = document.getElementById('toast');
+      toastElement.innerText = message;
+      
+      setTimeout(() => {
+        toastElement.parentNode.removeChild(toastElement);
+      }, delay);
+    });
+  </script>
+</body>
+</html>

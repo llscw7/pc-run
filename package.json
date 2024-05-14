@@ -1,0 +1,73 @@
+{
+  "name": "llscw",
+  "version": "1.0.0",
+  "description": "pc端程序管理器",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx pm2 start ecosystem.config.js --attach",
+    "build": "node webpack.config.js",
+    "l": "electron .",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llscw7/pc-run.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/llscw7/pc-run/issues"
+  },
+  "homepage": "https://github.com/llscw7/pc-run#readme",
+  "devDependencies": {
+    "@babel/core": "^7.21.3",
+    "@electron-forge/cli": "^6.0.5",
+    "@electron-forge/maker-deb": "^6.0.5",
+    "@electron-forge/maker-rpm": "^6.0.5",
+    "@electron-forge/maker-squirrel": "^6.0.5",
+    "@electron-forge/maker-zip": "^6.0.5",
+    "@electron-forge/plugin-base": "^6.0.5",
+    "@types/nedb": "^1.8.15",
+    "@types/uuid": "^9.0.1",
+    "babel-loader": "^9.1.2",
+    "chalk": "^4.1.2",
+    "clean-webpack-plugin": "^4.0.0",
+    "concurrently": "^7.6.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "electron": "^23.1.4",
+    "fork-ts-checker-webpack-plugin": "^8.0.0",
+    "fs-extra": "^11.1.1",
+    "gulp": "^4.0.2",
+    "html-webpack-plugin": "^5.5.0",
+    "node-addon-api": "^7.1.0",
+    "node-loader": "^2.0.0",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.2",
+    "webpack": "^5.76.2",
+    "webpack-cli": "^4.10.0",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.9.11",
+    "@grpc/proto-loader": "^0.7.10",
+    "axios": "^1.6.8",
+    "detect-port": "^1.6.1",
+    "downloadjs": "^1.4.7",
+    "electron-squirrel-startup": "^1.0.0",
+    "express": "^4.18.2",
+    "file-type": "^19.0.0",
+    "jimp": "^0.3.5",
+    "kill-port-process": "^3.2.1",
+    "lodash": "^4.17.21",
+    "minimist": "^1.2.8",
+    "multer": "^1.4.5-lts.1",
+    "nedb": "^1.8.0",
+    "sortablejs": "^1.15.0",
+    "typeorm": "^0.3.17",
+    "uuid": "^9.0.0",
+    "ws": "^8.14.2"
+  }
+}

@@ -1,0 +1,1 @@
+cmd_Release/screen_capture.node := c++ -bundle -undefined dynamic_lookup -Wl,-search_paths_first -mmacosx-version-min=10.15 -arch arm64 -L./Release -stdlib=libc++  -o Release/screen_capture.node Release/obj.target/screen_capture/screen_capture.o -framework CoreGraphics -framework CoreFoundation -framework ImageIO -framework CoreServices

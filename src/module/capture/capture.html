@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Canvas截取矩形区域</title>
+  <link rel="stylesheet" href="./iconfont/iconfont.css">
+  <style>
+    html,
+    body,
+    div {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* .mask {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+    } */
+
+    .bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .image-canvas {
+        position: absolute;
+        /* display: none; */
+        z-index: 1;
+    }
+
+    .size-info {
+        position: absolute;
+        color: #ffffff;
+        font-size: 12px;
+        background: rgba(40, 40, 40, 0.8);
+        padding: 5px 10px;
+        border-radius: 2px;
+        font-family: Arial Consolas sans-serif;
+        display: none;
+        z-index: 2;
+    }
+
+    .toolbar {
+        position: absolute;
+        color: #343434;
+        font-size: 12px;
+        background: #f5f5f5;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-family: Arial Consolas sans-serif;
+        display: none;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        z-index: 2;
+        align-items: center;
+    }
+
+    .toolbar .iconfont {
+        font-size: 24px;
+        padding: 2px 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- <div id="canvas-container">
+    <canvas id="my-canvas"></canvas>
+  </div> -->
+  <div id="canvas-container">
+    <div id="js-bg" class="bg"></div>
+    <div id="js-mask" class="mask"></div>
+    <canvas id="my-canvas" class="image-canvas"></canvas>
+    <div id="js-size-info" class="size-info"></div>
+    <div id="js-toolbar" class="toolbar">
+        <div class="iconfont icon-zhongzhi" id="js-tool-reset"></div>
+        <div class="iconfont icon-xiazai" id="js-tool-save"></div>
+        <div class="iconfont icon-guanbi" id="js-tool-close"></div>
+        <div class="iconfont icon-duihao" id="js-tool-ok"></div>
+    </div>
+  </div>
+  
+
+  <script>
+    function init({ x1 = 0, y1 = 0, x2 = 0, y2 = 0 }, callback) {
+      const $sizeInfo = document.getElementById('js-size-info')
+      const $toolbar = document.getElementById('js-toolbar')
+      var canvasContainer = document.getElementById("canvas-container");
+      var canvas = document.getElementById("my-canvas");
+      console.log(window.innerWidth, window.innerHeight, [window],'???--')
+      const width = window.innerWidth
+      const height = window.innerHeight
+      canvas.width = width
+      canvas.height = height
+
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.fillRect(0,0,width,height);
+
+      // ctx.beginPath();
+      // // ctx.fillStyle = "rgba(255, 34, 34, 0.2)";
+      // // ctx.strokeStyle = "#FF2222";
+      // ctx.lineWidth = 2;
+      // ctx.fillRect(100, 100, 100, 100);
+      // // ctx.strokeRect(100, 100, 100, 100);
+      // ctx.clip()
+
+      var rect = null;
+      var isDrawing = false;
+      var isResizingRB = false;
+      var isResizingLT = false;
+      var isDragging = false;
+      var startPointX, startPointY;
+
+      canvasContainer.addEventListener("mousedown", startDraw);
+      canvasContainer.addEventListener("mousemove", doDraw);
+      document.addEventListener("mouseup", endDraw);
+
+      if (x1 && y1 && x2 && y2) {
+        rect = {
+          x: x1,
+          y: y1,
+          width: x2 - x1,
+          height: y2 - y1
+        };
+        drawRect(rect);
+      }
+
+      function startDraw(e) {
+        if (!rect) {
+          startPointX = e.clientX - canvas.getBoundingClientRect().left;
+          startPointY = e.clientY - canvas.getBoundingClientRect().top;
+          rect = {
+            x: startPointX,
+            y: startPointY,
+            width: 0,
+            height: 0
+          };
+          isDrawing = true;
+        } else {
+          checkResize(e);
+          checkDrag(e);
+        }
+      }
+
+      function doDraw(e) {
+        if (isDrawing) {
+          var currentX = e.clientX - canvas.getBoundingClientRect().left;
+          var currentY = e.clientY - canvas.getBoundingClientRect().top;
+
+          var width = currentX - startPointX;
+          var height = currentY - startPointY;
+
+          rect.width = Math.max(Math.min(width, canvas.width - startPointX), 0);
+          rect.height = Math.max(Math.min(height, canvas.height - startPointY), 0);
+
+          clearCanvas();
+          drawRect(rect);
+        } else if (isResizingRB) {
+          var currentX = e.clientX - canvas.getBoundingClientRect().left;
+          var currentY = e.clientY - canvas.getBoundingClientRect().top;
+
+          var deltaX = currentX - startPointX;
+          var deltaY = currentY - startPointY;
+
+          rect.width += deltaX;
+          rect.height += deltaY;
+
+          startPointX = currentX;
+          startPointY = currentY;
+
+          clearCanvas();
+          drawRect(rect);
+        } else if (isResizingLT) {
+          var currentX = e.clientX - canvas.getBoundingClientRect().left;
+          var currentY = e.clientY - canvas.getBoundingClientRect().top;
+
+          var deltaX = currentX - startPointX;
+          var deltaY = currentY - startPointY;
+
+          rect.x += deltaX;
+          rect.y += deltaY;
+          rect.width -= deltaX;
+          rect.height -= deltaY;
+
+          startPointX = currentX;
+          startPointY = currentY;
+
+          clearCanvas();
+          drawRect(rect);
+        } else if (isDragging) {
+          var currentX = e.clientX - canvas.getBoundingClientRect().left;
+          var currentY = e.clientY - canvas.getBoundingClientRect().top;
+
+          var deltaX = currentX - startPointX;
+          var deltaY = currentY - startPointY;
+
+          rect.x += deltaX;
+          rect.y += deltaY;
+
+          startPointX = currentX;
+          startPointY = currentY;
+
+          clearCanvas();
+          drawRect(rect);
+        }
+      }
+
+      function endDraw(e) {
+        isDrawing = false;
+        isResizingRB = false;
+        isResizingLT = false;
+        isDragging = false;
+        if(rect) {
+          $toolbar.style.display = 'flex'
+          $toolbar.style.top = `${rect.y+rect.height + 15}px`
+          $toolbar.style.left = `${rect.x}px`
+        }
+        if (typeof callback === "function") {
+          callback(rect);
+        }
+      }
+
+      function checkResize(e) {
+        startPointX = x1 || (e.clientX - canvas.getBoundingClientRect().left);
+        startPointY = y1 || (e.clientY - canvas.getBoundingClientRect().top);
+
+        var resizeHandleSize = 3;
+
+        var onLeftEdge = Math.abs(startPointX - rect.x) <= resizeHandleSize;
+        var onRightEdge = Math.abs(startPointX - (rect.x + rect.width)) <= resizeHandleSize;
+        var onTopEdge = Math.abs(startPointY - rect.y) <= resizeHandleSize;
+        var onBottomEdge = Math.abs(startPointY - (rect.y + rect.height)) <= resizeHandleSize;
+
+        if (onLeftEdge || onTopEdge) {
+          isResizingLT = true;
+        }
+        if (onRightEdge || onBottomEdge) {
+          isResizingRB = true;
+        }
+      }
+
+      function checkDrag(e) {
+        var clickX = x1 || (e.clientX - canvas.getBoundingClientRect().left);
+        var clickY = y1 || (e.clientY - canvas.getBoundingClientRect().top);
+
+        if (
+          clickX > rect.x &&
+          clickX < rect.x + rect.width &&
+          clickY > rect.y &&
+          clickY < rect.y + rect.height
+        ) {
+          isDragging = true;
+          startPointX = clickX;
+          startPointY = clickY;
+        }
+      }
+
+      function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      function drawRect(rect) {
+        $toolbar.style.display = 'none'
+        $sizeInfo.style.display = 'block'
+        $sizeInfo.innerText = `${rect.width} * ${rect.height}`
+        if (rect.y > 35) {
+            $sizeInfo.style.top = `${rect.y - 30}px`
+        } else {
+            $sizeInfo.style.top = `${rect.y + 10}px`
+        }
+        $sizeInfo.style.left = `${rect.x}px`
+
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.fillRect(0,0,width,height);
+
+        // ctx.fillStyle = "rgba(255, 34, 34, 0.2)";
+        ctx.strokeStyle = "#606266";
+        ctx.lineWidth = 2;
+        ctx.clearRect(rect.x, rect.y, rect.width, rect.height);
+        // ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+        ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
+      }
+    }
+
+    init({}, (rect) => {
+      if (!rect) return;
+      const ok = document.getElementById('js-tool-ok')
+      const close = document.getElementById('js-tool-close')
+      ok.onclick = () => {
+        const {x, y, width, height} = rect
+        window.electronAPI.captureOk(x,y,width,height)
+      }
+      close.onclick = () => {
+        window.electronAPI.captureClose()
+      }
+      console.log(rect, "???>>>");
+    });
+  </script>
+</body>
+
+</html>
