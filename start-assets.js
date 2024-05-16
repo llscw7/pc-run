@@ -1,10 +1,12 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path')
-const app = express();
+const fse = require('fs-extra')
 const { killPortProcess } = require('kill-port-process');
 const detect = require('detect-port');
+const app = express();
 
+fse.ensureDirSync('./assets_pc/images')
 
 const port = 38435
 
@@ -57,6 +59,6 @@ detect(port)
   })
 })
 .catch(err => {
-  console.error(err);
+  console.error(`图片服务器启动失败：${err}`);
 });
   
