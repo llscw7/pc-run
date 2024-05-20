@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path')
 const fse = require('fs-extra')
+const { accessSync, constants } = require('fs')
 const { killPortProcess } = require('kill-port-process');
 const detect = require('detect-port');
 const bodyParser = require('body-parser')
@@ -60,8 +61,13 @@ app.post('/submit', jsonParser, (req, res) => {
   const { data } = req.body
   if(data && data.images && data.images.length) {
     for(let img of data.images) {
-      fse.copyFileSync(`./assets_pc/cache/${img}`, `./assets_pc/images/${img}`)
-      console.log(`上传成功：${img}`)
+      try {
+        accessSync(`./assets_pc/cache/${img}`, constants.R_OK | constants.W_OK);
+        fse.copyFileSync(`./assets_pc/cache/${img}`, `./assets_pc/images/${img}`)
+        console.log(`上传成功：${img}`)
+      } catch (err) {
+        // console.error(`上传跳过：${img}`);
+      } 
     }
   }
   res.json({ status: {message: 'success', code: 0}, result: data });
