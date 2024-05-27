@@ -223,6 +223,7 @@ class MyDatabase {
           }
         })
         this.delete('tb_name', id)
+        // TODO: 删除数据库文件
         return true;
       }catch(err) {
         console.error(err)
