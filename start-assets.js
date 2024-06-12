@@ -73,6 +73,18 @@ app.post('/submit', jsonParser, (req, res) => {
   res.json({ status: {message: 'success', code: 0}, result: data });
 })
 
+app.get('/allImage', (req, res) => {
+  const files = fse.readdirSync('./assets_pc/images')
+  const images = []
+  if(files.length) {
+    for(let v of files) {
+      images.push(`http://localhost:38435/${v}`)
+    }
+  }
+  console.log(images,'------')
+  return res.json(images)
+})
+
 // 将指定目录下的文件作为静态资源提供给客户端
 app.use(express.static('assets_pc/images'));
 app.use(express.static('assets_pc/cache'));
