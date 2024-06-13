@@ -81,7 +81,6 @@ app.get('/allImage', (req, res) => {
       images.push(`http://localhost:38435/${v}`)
     }
   }
-  console.log(images,'------')
   return res.json(images)
 })
 
