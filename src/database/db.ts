@@ -18,7 +18,7 @@ class MyDatabase {
     this.tb_name.loadDatabase();
 
     this.initData()
-    this.updatePathInAllTables(['img', 'banner'])
+    // this.updatePathInAllTables(['img', 'banner'])
   }
 
   @Find('tb_name')
