@@ -84,6 +84,22 @@ app.get('/allImage', (req, res) => {
   return res.json(images)
 })
 
+app.post('/delete', jsonParser, (req, res) => {
+  const { data } = req.body
+  if(data?.images?.length) {
+    try {
+      const imgs = data.images.map(item=>(path.basename(item)))
+      console.log(imgs,'====000')
+      for(let img of imgs) {
+        fse.removeSync(`./assets_pc/images/${img}`)
+      }
+    }catch(err) {
+      return res.json({ status: {message: 'fail', code: -1}, result: `${err}` });
+    }
+  }
+  return res.json({ status: {message: 'success', code: 0}, result: "" });
+})
+
 // 将指定目录下的文件作为静态资源提供给客户端
 app.use(express.static('assets_pc/images'));
 app.use(express.static('assets_pc/cache'));
