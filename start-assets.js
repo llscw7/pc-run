@@ -74,13 +74,20 @@ app.post('/submit', jsonParser, (req, res) => {
 })
 
 app.get('/allImage', (req, res) => {
-  const files = fse.readdirSync('./assets_pc/images')
+  const folderPath = './assets_pc/images';
+
+  const files = fse.readdirSync(folderPath)
   const images = []
-  if(files.length) {
-    for(let v of files) {
-      images.push(`http://localhost:38435/${v}`)
-    }
+
+  for(let v of files) {
+    const filePath = path.join(folderPath, v);
+    const stats = fse.statSync(filePath)
+    images.push({
+      url: `http://localhost:38435/${v}`,
+      modifiedTime: stats.mtime
+    })
   }
+
   return res.json(images)
 })
 
