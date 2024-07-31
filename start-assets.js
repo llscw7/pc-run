@@ -84,7 +84,8 @@ app.get('/allImage', (req, res) => {
     const stats = fse.statSync(filePath)
     images.push({
       url: `http://localhost:38435/${v}`,
-      modifiedTime: stats.mtime
+      modifiedTime: stats.mtime,
+      name: v
     })
   }
 
