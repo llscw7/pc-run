@@ -25,6 +25,9 @@ const finalWebpackConfig = {
     capture: [
       './module/capture/index.ts'
     ],
+    picture: [
+      './module/picture/index.ts'
+    ],
     'preload.capture': [
       './module/capture/preload.capture.ts'
     ],
@@ -99,6 +102,11 @@ const finalWebpackConfig = {
     new HtmlWebpackPlugin({
       template: 'module/capture/capture.html',  // 指定 HTML 模板文件路径
       filename: 'capture/capture.html',  // 输出的 HTML 文件名
+      chunks: []
+    }),
+    new HtmlWebpackPlugin({
+      template: 'module/picture/picture.html',  // 指定 HTML 模板文件路径
+      filename: 'picture/picture.html',  // 输出的 HTML 文件名
       chunks: []
     }),
     new ForkTsCheckerWebpackPlugin({

@@ -5,6 +5,7 @@ import DataController from './controllers/data.controller';
 import FileController from './controllers/file.controller';
 import { encodeById, pathJoin, pathBasename, pathDirname, uploadImage } from './utils/tool';
 import Capture from './module/capture/index'
+import Picture from './module/picture/index'
 import MyDatabase from './database/db'
 import fse from 'fs-extra'
 import path from 'path';
@@ -49,6 +50,8 @@ const createWindow = (): void => {
   });
 
   setApplicationMenu()
+
+  Picture()
 
   // createWebSocketServer()
 
