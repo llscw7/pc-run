@@ -7,10 +7,15 @@
     <style>
         body {
             background-color: #000000;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
         }
         .picture-wrap {
             width: 100%;
             height: 100%;
+            -webkit-app-region: drag;
         }
         .pricture {
             max-height: 100%;
@@ -21,11 +26,60 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+        .option-pre {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 9;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            -webkit-app-region: no-drag;
+        }
+        .arrow-icon {
+            z-index: 9;
+            width: 16px;
+            height: 16px;
+            border-top: 2px solid #fff;
+            border-right: 2px solid #fff;
+            transform: rotate(-135deg);
+            margin-left: 9px;
+        }
+        .option-next {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 9;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            -webkit-app-region: no-drag;
+        }
+        .option-next .arrow-icon {
+            transform: rotate(45deg);
+            margin-left: -9px;
+        }
     </style>
 </head>
 <body>
     <div class="picture-wrap">
         <img src="http://localhost:38435/image-1719406700745-299771258.png" alt="" class="pricture">
+    </div>
+    <div class="picture-option">
+        <div class="option-pre"><div class="arrow-icon"></div></div>
+        <div class="option-next"><div class="arrow-icon"></div>
     </div>
 </body>
 </html>
