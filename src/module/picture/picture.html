@@ -6,7 +6,7 @@
     <title>图片预览</title>
     <style>
         body {
-            background-color: #000000;
+            background-color: rgba(0, 0, 0, 0.5);
             margin: 0;
             padding: 0;
             width: 100vw;
@@ -75,11 +75,34 @@
 </head>
 <body>
     <div class="picture-wrap">
-        <img src="http://localhost:38435/image-1719406700745-299771258.png" alt="" class="pricture">
+        <img id="picturePreview" src="" alt="" class="pricture">
     </div>
     <div class="picture-option">
-        <div class="option-pre"><div class="arrow-icon"></div></div>
-        <div class="option-next"><div class="arrow-icon"></div>
+        <div class="option-pre" id="option-pre"><div class="arrow-icon"></div></div>
+        <div class="option-next" id="option-next"><div class="arrow-icon"></div>
     </div>
+    <script>
+        const { ipcRenderer } = require('electron');
+        ipcRenderer.on('data', (event, data) => {
+            console.log(data,'-----')
+            const picturePreview = document.getElementById('picturePreview')
+            picturePreview.src = data.url
+            
+            const pre = document.getElementById('option-pre')
+            const next = document.getElementById('option-next')
+            pre.onclick = () => {
+                const findIndex = data.srcList.findIndex((item)=> item === picturePreview.src)
+                if(findIndex > 0) {
+                    picturePreview.src = data.srcList[findIndex - 1]
+                }
+            }
+            next.onclick = () => {
+                const findIndex = data.srcList.findIndex((item)=> item === picturePreview.src)
+                if(findIndex > -1 && findIndex < data.srcList.length - 1) {
+                    picturePreview.src = data.srcList[findIndex + 1]
+                }
+            }
+        })
+    </script>
 </body>
 </html>

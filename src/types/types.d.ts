@@ -91,3 +91,8 @@ declare namespace ResponseParam {
     result: string;
   }
 }
+
+interface PicturePreviewData {
+  url: string;
+  srcList: string[];
+}
