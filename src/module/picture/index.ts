@@ -1,9 +1,5 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import path from 'path'
-
-/**
- * TODO: 无边框的窗口拖拽事件
- */
 
 function showPicture(data: PicturePreviewData) {
   
@@ -16,20 +12,20 @@ function showPicture(data: PicturePreviewData) {
           nodeIntegration: true,
           contextIsolation: false,
         },
-        // alwaysOnTop: true,
     });
 
     pictureWindow.loadFile(path.join(PICTURE_ROOR_PATH, 'picture.html'));
   
-    console.log(data,'----')
-  // 向 toast.html 页面发送消息
-  pictureWindow.webContents.on('did-finish-load', () => {
-    pictureWindow.webContents.send('data', data);
-  });
+  if(pictureWindow?.webContents) {
+    pictureWindow.webContents.on('did-finish-load', () => {
+      pictureWindow.webContents.send('data', data);
+    });
+  }
+
+  ipcMain.once('close-win', (event) => {
+    pictureWindow.close()
+  })
   
-//   setTimeout(() => {
-//     pictureWindow.close();
-//   }, delay);
 }
 
 export {
