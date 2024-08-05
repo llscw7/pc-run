@@ -1,9 +1,15 @@
 import { BrowserWindow, ipcMain } from 'electron';
 import path from 'path'
 
+let pictureWindow;
+
 function showPicture(data: PicturePreviewData) {
+
+    if(pictureWindow) {
+      return
+    }
   
-    const pictureWindow = new BrowserWindow({
+    pictureWindow = new BrowserWindow({
         width: 800,
         height: 600,
         frame: false,
@@ -24,6 +30,7 @@ function showPicture(data: PicturePreviewData) {
 
   ipcMain.once('close-win', (event) => {
     pictureWindow.close()
+    pictureWindow = null;
   })
   
 }

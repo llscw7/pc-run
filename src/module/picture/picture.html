@@ -109,20 +109,19 @@
     <script>
         const { ipcRenderer } = require('electron');
         ipcRenderer.on('data', (event, data) => {
-            console.log(data,'-----')
             const picturePreview = document.getElementById('picturePreview')
             picturePreview.src = data.url
             
             const pre = document.getElementById('option-pre')
             const next = document.getElementById('option-next')
             pre.onclick = () => {
-                const findIndex = data.srcList.findIndex((item)=> item === picturePreview.src)
+                const findIndex = data.srcList.findIndex((item)=> item === decodeURIComponent(picturePreview.src))
                 if(findIndex > 0) {
                     picturePreview.src = data.srcList[findIndex - 1]
                 }
             }
             next.onclick = () => {
-                const findIndex = data.srcList.findIndex((item)=> item === picturePreview.src)
+                const findIndex = data.srcList.findIndex((item)=> item === decodeURIComponent(picturePreview.src))
                 if(findIndex > -1 && findIndex < data.srcList.length - 1) {
                     picturePreview.src = data.srcList[findIndex + 1]
                 }
