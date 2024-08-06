@@ -95,6 +95,24 @@
             font-weight: 100;
             height: 50px;
         }
+        .option-page {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9;
+            min-width: 150px;
+            height: 50px;
+            padding: 0 20px;
+            border-radius: 50px;
+            box-sizing: border-box;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -104,29 +122,47 @@
     <div class="picture-option">
         <div class="option-close" id="option-close"><div class="close-icon">&times;</div></div>
         <div class="option-pre" id="option-pre"><div class="arrow-icon"></div></div>
-        <div class="option-next" id="option-next"><div class="arrow-icon"></div>
+        <div class="option-next" id="option-next"><div class="arrow-icon"></div></div>
+        <div class="option-page" id="option-page"></div>
     </div>
     <script>
         const { ipcRenderer } = require('electron');
         ipcRenderer.on('data', (event, data) => {
+            
+            
             const picturePreview = document.getElementById('picturePreview')
             picturePreview.src = data.url
-            
+
+            const findIndex = data.srcList.findIndex((item)=> item === decodeURIComponent(picturePreview.src))
+            const len = data.srcList.length
+            viewOtherPicture(findIndex, len)
+
             const pre = document.getElementById('option-pre')
             const next = document.getElementById('option-next')
             pre.onclick = () => {
                 const findIndex = data.srcList.findIndex((item)=> item === decodeURIComponent(picturePreview.src))
                 if(findIndex > 0) {
                     picturePreview.src = data.srcList[findIndex - 1]
+                    viewOtherPicture(findIndex - 1, len)
                 }
             }
             next.onclick = () => {
                 const findIndex = data.srcList.findIndex((item)=> item === decodeURIComponent(picturePreview.src))
-                if(findIndex > -1 && findIndex < data.srcList.length - 1) {
+                if(findIndex > -1 && findIndex < len - 1) {
                     picturePreview.src = data.srcList[findIndex + 1]
+                    viewOtherPicture(findIndex + 1, len)
                 }
             }
         })
+
+        /**
+         * 切换下一张图片，更新底部页码
+         * */
+        function viewOtherPicture(curPage, pageSize) {
+            const page = document.getElementById('option-page')
+            page.innerHTML = `${curPage + 1} / ${pageSize}`
+        }
+
         const close = document.getElementById('option-close')
         close.onclick = () => {
             ipcRenderer.send('close-win')
