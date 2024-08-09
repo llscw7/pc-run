@@ -11,6 +11,7 @@ import fse from 'fs-extra'
 import path from 'path';
 import WebSocket, { WebSocketServer } from 'ws';
 import express from 'express'
+import { glob } from 'glob'
 
 let wss;
 
@@ -59,6 +60,16 @@ const createWindow = (): void => {
 };
 
 app.whenReady().then(()=>{
+
+  /**
+   * TODO: 目录树
+   */
+  ipcMain.handle('tools:readdir', async (event) => {
+    console.log(process.cwd(),'----')
+    const jsfiles = await glob('H:\\lesson/**/*', { ignore: 'node_modules/**' })
+    console.log(jsfiles)
+    return jsfiles
+  })
 
   ipcMain.handle('dialog:selectImage', async ()=>{
     const dialog = new DialogController(['multiSelections', 'openFile'])

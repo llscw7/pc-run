@@ -75,5 +75,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return ipcRenderer.invoke('db:insertData', _newData)
   },
   showItemInFolder: (link: string) => ipcRenderer.invoke('action:showItemInFolder', link),
-  previewPicture: (data: PicturePreviewData) => ipcRenderer.invoke('action:showPicture', data)
+  previewPicture: (data: PicturePreviewData) => ipcRenderer.invoke('action:showPicture', data),
+  readdir: (id: string) => ipcRenderer.invoke('tools:readdir', id),
 })
