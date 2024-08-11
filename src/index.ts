@@ -64,11 +64,18 @@ app.whenReady().then(()=>{
   /**
    * TODO: 目录树
    */
-  ipcMain.handle('tools:readdir', async (event) => {
-    console.log(process.cwd(),'----')
-    const jsfiles = await glob('H:\\lesson/**/*', { ignore: 'node_modules/**' })
-    console.log(jsfiles)
-    return jsfiles
+  ipcMain.handle('tools:readdir', async (event, dir) => {
+    if(process.platform === 'win32') {
+      dir = process.env.SystemDrive + '\\'
+    }else {
+      dir = '/'
+    }
+    console.log(dir,'----')
+    
+    const files = fse.readdirSync(dir)
+    // const jsfiles = await glob('H:\\lesson/**', { ignore: 'node_modules/**' })
+    console.log(files)
+    return files
   })
 
   ipcMain.handle('dialog:selectImage', async ()=>{
