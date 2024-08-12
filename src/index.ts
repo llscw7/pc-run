@@ -65,17 +65,51 @@ app.whenReady().then(()=>{
    * TODO: 目录树
    */
   ipcMain.handle('tools:readdir', async (event, dir) => {
-    if(process.platform === 'win32') {
-      dir = process.env.SystemDrive + '\\'
-    }else {
-      dir = '/'
+    if(!dir) {
+      if(process.platform === 'win32') {
+        dir = process.env.SystemDrive + '\\'
+      }else {
+        dir = '/'
+      }
     }
     console.log(dir,'----')
     
     const files = fse.readdirSync(dir)
     // const jsfiles = await glob('H:\\lesson/**', { ignore: 'node_modules/**' })
     console.log(files)
-    return files
+
+    /**区分 文件 与 目录 */
+    const result = {file: [], dir: []}
+    for(let f of files) {
+      const p = path.join(dir, f)
+      
+      /**过滤系统文件 */
+      if (p.includes('$RECYCLE.BIN')) {  
+        console.log('访问被拒绝: 系统文件');  
+        continue;
+      }
+      /**过滤系统文件 */
+
+      try {
+        const stat = fse.statSync(p)
+        if(stat.isFile()) {
+          result.file.push(f)
+        }
+        if(stat.isDirectory()) {
+          result.dir.push(f)
+        }
+      }catch(err) {
+        // 捕获权限错误  
+        if (err.code === 'EPERM') {  
+          console.error('错误: 没有权限访问该路径', p);  
+        } else {  
+          console.error('读取路径出错:', err);  
+        }  
+      }
+    }
+    /**区分 文件 与 目录 */
+
+    return result
   })
 
   ipcMain.handle('dialog:selectImage', async ()=>{
