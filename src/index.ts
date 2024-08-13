@@ -11,7 +11,6 @@ import fse from 'fs-extra'
 import path from 'path';
 import WebSocket, { WebSocketServer } from 'ws';
 import express from 'express'
-import { glob } from 'glob'
 
 let wss;
 
@@ -72,11 +71,8 @@ app.whenReady().then(()=>{
         dir = '/'
       }
     }
-    console.log(dir,'----')
     
     const files = fse.readdirSync(dir)
-    // const jsfiles = await glob('H:\\lesson/**', { ignore: 'node_modules/**' })
-    console.log(files)
 
     /**区分 文件 与 目录 */
     const result = {file: [], dir: []}
