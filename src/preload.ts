@@ -76,5 +76,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   showItemInFolder: (link: string) => ipcRenderer.invoke('action:showItemInFolder', link),
   previewPicture: (data: PicturePreviewData) => ipcRenderer.invoke('action:showPicture', data),
-  readdir: (pathname: string) => ipcRenderer.invoke('tools:readdir', pathname),
+  readdir: (pathname: string, parentId: number, level: number) => ipcRenderer.invoke('tools:readdir', pathname, parentId, level),
 })

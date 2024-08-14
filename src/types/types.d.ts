@@ -96,3 +96,12 @@ interface PicturePreviewData {
   url: string;
   srcList: string[];
 }
+
+interface ReadDirData {
+  id: number;
+  name: string;
+  path: string;
+  type: string;
+  level: number;
+  parentId: number;
+}

@@ -63,7 +63,7 @@ app.whenReady().then(()=>{
   /**
    * TODO: 目录树
    */
-  ipcMain.handle('tools:readdir', async (event, dir) => {
+  ipcMain.handle('tools:readdir', async (event, dir, parentId=0, level=0) => {
     if(!dir) {
       if(process.platform === 'win32') {
         dir = process.env.SystemDrive + '\\'
@@ -75,7 +75,23 @@ app.whenReady().then(()=>{
     const files = fse.readdirSync(dir)
 
     /**区分 文件 与 目录 */
-    const result = {file: [], dir: []}
+    const tmp = [
+      {
+        id: '2',
+        name: '',
+        path: '',
+        level: 1,
+        parentId: 1
+      },
+      {
+        id: '3',
+        name: '',
+        path: '',
+        level: 2,
+        parentId: 2
+      }
+    ]
+    const result: ReadDirData[] = []
     for(let f of files) {
       const p = path.join(dir, f)
       
@@ -88,11 +104,26 @@ app.whenReady().then(()=>{
 
       try {
         const stat = fse.statSync(p)
+        console.log(stat,'------')
         if(stat.isFile()) {
-          result.file.push(f)
+          result.push({
+            id: stat.ino,
+            name: f,
+            path: p,
+            type: 'file',
+            level: level,
+            parentId: parentId
+          })
         }
         if(stat.isDirectory()) {
-          result.dir.push(f)
+          result.push({
+            id: stat.ino,
+            name: f,
+            path: p,
+            type: 'dir',
+            level: level,
+            parentId: parentId
+          })
         }
       }catch(err) {
         // 捕获权限错误  
